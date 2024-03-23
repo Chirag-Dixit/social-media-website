@@ -7,13 +7,14 @@ import { connect } from "react-redux";
 import { logout } from "../redux";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import SailingIcon from "@mui/icons-material/Sailing";
 
 const Navbar = (props) => {
   const { isLoggedIn, userData, logout } = props;
 
   const userSignOut = async () => {
-    await signOut(auth)
-  }
+    await signOut(auth);
+  };
 
   const handleLogout = () => {
     logout();
@@ -28,6 +29,7 @@ const Navbar = (props) => {
       alignItems="center"
     >
       <h3>Logo</h3>
+
       <TextField
         id="outlined-basic"
         label="Search for posts..."
@@ -35,14 +37,16 @@ const Navbar = (props) => {
         size="small"
         sx={{}}
       />
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack direction="row"  alignItems="center">
         <Link to="/">
-          <HomeIcon
-            fontSize="medium"
-            sx={{
-              color: "black",
-            }}
-          />
+          <Button>
+            <HomeIcon
+              fontSize="medium"
+              sx={{
+                color: "black",
+              }}
+            />
+          </Button>
         </Link>
 
         {isLoggedIn ? (
@@ -54,8 +58,8 @@ const Navbar = (props) => {
             >
               <MessageIcon fontSize="medium" />
             </Button>
-            <Tooltip title={`${userData.displayName}`} arrow >
-              <Link to='/profile'>
+            <Tooltip title={`${userData.displayName}`} arrow>
+              <Link to="/profile">
                 <Button>
                   <MoodIcon />
                 </Button>
@@ -86,9 +90,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return{
+  return {
     logout: () => dispatch(logout()),
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
