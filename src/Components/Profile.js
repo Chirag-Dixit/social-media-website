@@ -2,39 +2,26 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
-import { Box } from "@mui/material";
+import { Card, Tabs, Tab, Grid } from "@mui/material";
+import Navbar from "./Navbar";
+import ProfileCard from "./profile/ProfileCard";
+import ProfileTab from "./profile/ProfileTab";
+import SortTab from "./profile/SortTab";
 
 const Profile = () => {
-  const [authUser, setAuthUser] = useState(null);
-  useEffect(() => {
-    const listen = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setAuthUser(user);
-      } else {
-        setAuthUser(null);
-      }
-    });
-
-    return () => {
-      listen();
-    };
-  }, []);
-
-  const userSignOut = async () => {
-    const data = await signOut(auth);
-  };
+  
   return (
-    <Box textAlign="center">
-      {authUser ? (
-        <>
-          <p>Signed In! {`${authUser.displayName}`}</p>{" "}
-          <button onClick={userSignOut}>Sign Out</button>
-        </>
-      ) : (
-        <p>Signed Out</p>
-      )}
-      <Link to="/">&lt;&lt;Back to Home Page</Link>
-    </Box>
+    <div>
+      <Navbar />
+      <Grid container spacing={{ xs: 2, md: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid item xs={8}>
+          <ProfileTab />
+        </Grid>
+        <Grid item xs={4} >
+          <ProfileCard/>
+        </Grid>
+      </Grid>
+    </div>
   );
 };
 

@@ -7,6 +7,7 @@ import { login } from "../../redux/login/loginAction";
 import { connect } from "react-redux";
 
 const SignUp = (props) => {
+  const {login} = props
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -14,9 +15,12 @@ const SignUp = (props) => {
 
   const signUp = async (e) => {
     e.preventDefault();
-    await createUserWithEmailAndPassword(auth, email, password);
+    let data = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(auth.currentUser, { displayName: username });
-    login(auth.currentUser.displayName);
+    console.log(data)
+    const emailAdd = data.user.email
+    const displayName = data.user.displayName
+    login({displayName, emailAdd});
     navigate("/");
   };
 
@@ -99,4 +103,10 @@ const SignUp = (props) => {
   );
 };
 
-export default SignUp;
+const mapDispatchToProps = dispatch =>{
+  return{
+    login: (data) => dispatch(login(data)),
+  }
+}
+
+export default connect(null, mapDispatchToProps)(SignUp);
