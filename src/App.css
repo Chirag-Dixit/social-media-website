@@ -8,3 +8,7 @@ a{
   text-decoration: none;
   color: blue;
 }
+
+.topPostBox:hover{
+  background-color: rgb(247, 245, 245);
+}

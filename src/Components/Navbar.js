@@ -2,24 +2,34 @@ import { Button, Select, Stack, TextField, Tooltip, Zoom } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import MessageIcon from "@mui/icons-material/Message";
 import MoodIcon from "@mui/icons-material/Mood";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../redux";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import SailingIcon from "@mui/icons-material/Sailing";
+import PublicIcon from '@mui/icons-material/Public';
+import { useEffect } from "react";
 
 const Navbar = (props) => {
   const { isLoggedIn, userData, logout } = props;
 
   const userSignOut = async () => {
     await signOut(auth);
+    window.location.reload(false);
   };
 
   const handleLogout = () => {
     logout();
     userSignOut();
   };
+
+  useEffect(()=>{
+    //api call
+    return ()=> {
+      
+    }
+  }, [])
 
   return (
     <Stack
@@ -28,7 +38,16 @@ const Navbar = (props) => {
       justifyContent="space-between"
       alignItems="center"
     >
-      <h3>Logo</h3>
+      <Tooltip title='This is the logo bdw'>
+        <Button sx={{
+          color: 'black',
+        }}>
+          <SailingIcon sx={{
+            width: '45px',
+            height: '45px'
+          }}/>
+        </Button>
+      </Tooltip>
 
       <TextField
         id="outlined-basic"
@@ -37,7 +56,7 @@ const Navbar = (props) => {
         size="small"
         sx={{}}
       />
-      <Stack direction="row"  alignItems="center">
+      <Stack direction="row" spacing={0}  alignItems='center'>
         <Link to="/">
           <Button>
             <HomeIcon
@@ -59,7 +78,7 @@ const Navbar = (props) => {
               <MessageIcon fontSize="medium" />
             </Button>
             <Tooltip title={`${userData.displayName}`} arrow>
-              <Link to="/profile">
+              <Link to='/profile'>
                 <Button>
                   <MoodIcon />
                 </Button>
