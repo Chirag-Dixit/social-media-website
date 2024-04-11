@@ -2,9 +2,10 @@ import { Box, Button, Stack, TextField } from "@mui/material";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../../firebase";
+import { auth, database } from "../../firebase";
 import { login } from "../../redux/login/loginAction";
 import { connect } from "react-redux";
+import { addDoc, collection } from "firebase/firestore";
 
 const SignUp = (props) => {
   const {login} = props
@@ -12,14 +13,19 @@ const SignUp = (props) => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
+  const value = collection(database, 'users')
+
+  const handleUser = async(Email, Uname)=>{
+    await addDoc(value, {userEmail: Email,userName: Uname, bio: ""})
+  }
 
   const signUp = async (e) => {
     e.preventDefault();
     let data = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(auth.currentUser, { displayName: username });
-    console.log(data)
     const emailAdd = data.user.email
     const displayName = data.user.displayName
+    handleUser(emailAdd, displayName)
     login({displayName, emailAdd});
     navigate("/");
   };
