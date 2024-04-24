@@ -1,23 +1,50 @@
 import { Button, Paper, Stack, Typography } from "@mui/material";
-import { FieldValue, collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import {
+  FieldValue,
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { database } from "../firebase";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { setUserProfile } from "../redux/userProfile/userProfileAction";
 import { connect } from "react-redux";
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import { setPostId } from "../redux/comment/postAction";
-import CommentIcon from '@mui/icons-material/Comment';
+import CommentIcon from "@mui/icons-material/Comment";
+import {setBio} from "../redux/userBioData/bioAction"
 
 const PostsCard = (prop) => {
-  const { isLoggedIn, commentDisabled } = prop
+  const { isLoggedIn, commentDisabled, bio } = prop;
   const { values, setUserProfile, userData } = prop;
-  const {likesBy} = values
-  const [liked, setLiked] = useState(likesBy?.includes(prop.userData?.displayName))
-  const [likes, setLikes] = useState(values.likes)
-  // const [comments, setComments] = useState(values.commnentsCount)
-  const navigate = useNavigate()
+  const { likesBy } = values;
+  const [liked, setLiked] = useState(
+    likesBy?.includes(prop.userData?.displayName)
+  );
+  const [likes, setLikes] = useState(values.likes);
+  const [id, setId] = useState('');
+  const [userLikesCount, setUserLikesCount] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    const getUserData = () => {
+      bio.forEach((element) => {
+        if (element.userName == values.userName) {
+          // console.log(element.likesCount);
+          setId(element.id);
+          setUserLikesCount(element.likesCount);
+        }
+      });
+    };
+
+    
+    getUserData()
+  }, [])
+  // console.log(userLikesCount);
+
   const handleClick = () => {
     setUserProfile(values);
   };
@@ -49,32 +76,44 @@ const PostsCard = (prop) => {
     // console.log(formatDate);
   }
 
-  const handleUpdate = async() => {
-    if(isLoggedIn){
-      setLiked(!liked)
-      const updateData = doc(database, 'posts', values.id)
-      if(liked){
-        const newLikesBy = likesBy.filter(str => str!== prop.userData?.displayName)
-        await updateDoc(updateData, {likes: likes-1, likesBy: newLikesBy})
-        setLikes(likes-1)
-      }else{
-        likesBy.push(prop.userData?.displayName)
-        await updateDoc(updateData, {likes: likes+1, likesBy: likesBy})
-        setLikes(likes+1)
+  const handleUpdate = async () => {
+    if (isLoggedIn) {
+      setLiked(!liked);
+      const updateData = doc(database, "posts", values.id);
+
+      // const updateUserData = doc(database, "users", id);
+
+      // console.log(updateUserData);
+      if (liked) {
+        const newLikesBy = likesBy.filter(
+          (str) => str !== prop.userData?.displayName
+        );
+        await updateDoc(updateData, { likes: likes - 1, likesBy: newLikesBy });
+        setLikes(likes - 1);
+
+        //update the likes count in users collection as well
+        // await updateDoc(updateUserData, { likesCount: userLikesCount-1 });
+        // setUserLikesCount(userLikesCount - 1)
+      } else {
+        likesBy.push(prop.userData?.displayName);
+        await updateDoc(updateData, { likes: likes + 1, likesBy: likesBy });
+        // await updateDoc(updateUserData, { likesCount: userLikesCount + 1 });
+        // setUserLikesCount(userLikesCount+1)
+        setLikes(likes + 1);
       }
-    }else{
-      navigate('/login')
+    } else {
+      navigate("/login");
     }
-  }
+  };
 
   const handleComment = () => {
-    if(isLoggedIn){
-      prop.setPostId(values.id)
-      navigate(`/post/${values.id}`)
-    }else{
-      navigate('/login')
+    if (isLoggedIn) {
+      prop.setPostId(values.id);
+      navigate(`/post/${values.id}`);
+    } else {
+      navigate("/login");
     }
-  }
+  };
 
   return (
     <Paper
@@ -82,7 +121,6 @@ const PostsCard = (prop) => {
       variant="outlined"
       sx={{
         width: "96%",
-        height: "100%",
         padding: "10px",
       }}
     >
@@ -101,17 +139,20 @@ const PostsCard = (prop) => {
           {formatDate}
         </Typography>
       </Stack>
-      <Typography variant="h6">
-        {values.title}
-      </Typography>
-      {values.content}
-      <br />
-      <Stack direction='row' mt={2} justifyContent='space-between'>
-        <Stack direction='row'>
-          <Button onClick={handleUpdate}>{liked? <ThumbUpAltIcon />:<ThumbUpOffAltIcon />} {likes}</Button>
-          {
-            commentDisabled ? <div></div> : <Button onClick={handleComment}><CommentIcon /></Button>
-          }
+      <Typography variant="h6">{values.title}</Typography>
+      <Typography textOverflow="ellipsis">{values.content}</Typography>
+      <Stack direction="row" mt={2} justifyContent="space-between">
+        <Stack direction="row">
+          <Button onClick={handleUpdate}>
+            {liked ? <ThumbUpAltIcon /> : <ThumbUpOffAltIcon />} {likes}
+          </Button>
+          {commentDisabled ? (
+            <div></div>
+          ) : (
+            <Button onClick={handleComment}>
+              <CommentIcon />
+            </Button>
+          )}
         </Stack>
       </Stack>
     </Paper>
@@ -122,13 +163,15 @@ const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.login.isLoggedIn,
     userData: state.login.userData,
+    bio: state.bio.bioData,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setUserProfile: (data) => dispatch(setUserProfile(data)),
-    setPostId: (id) => dispatch(setPostId(id))
+    setPostId: (id) => dispatch(setPostId(id)),
+    setBio: (data)=>dispatch(setBio(data))
   };
 };
 

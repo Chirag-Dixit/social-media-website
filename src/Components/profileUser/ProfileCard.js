@@ -40,7 +40,11 @@ const ProfileCard = (prop) => {
           </Typography>
         </Stack>
 
-        <Typography variant="subtitle1">Likes count, Posts count</Typography>
+        <Stack direction='row' spacing={2}>
+          <Typography variant="subtitle1" color='primary'>Likes: {values.likesCount}</Typography>
+          <Typography variant="subtitle1" color='primary'>Posts: {values.postsCount}</Typography>
+        </Stack>
+
       </Stack>
     </Card>
   );

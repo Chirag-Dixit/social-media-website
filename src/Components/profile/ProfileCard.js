@@ -5,6 +5,7 @@ import ProfileCard2 from "./ProfileCard2";
 
 import { collection, getDocs } from "firebase/firestore";
 import { database } from "../../firebase";
+import { setBio } from "../../redux";
 
 const ProfileCard = (prop) => {
   const { userData, } = prop;
@@ -22,9 +23,11 @@ const ProfileCard = (prop) => {
     getData();
   }, []);
 
+  // prop.setBio(val)
+
 
   const card = val.map((values, index)=>{
-    if(values.userName === userData.displayName)
+    if(values.userName === userData?.displayName)
     {
       return <ProfileCard2 values={values} key={index}/>
     }
@@ -46,4 +49,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(ProfileCard);
+const mapDispatchToProps = dispatch => {
+  return{
+    setBio: (data) => dispatch(setBio(data)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileCard);
