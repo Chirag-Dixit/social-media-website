@@ -20,7 +20,8 @@ import {setBio} from "../redux/userBioData/bioAction"
 const PostsCard = (prop) => {
   const { isLoggedIn, commentDisabled, bio } = prop;
   const { values, setUserProfile, userData } = prop;
-  const { likesBy } = values;
+  // console.log(values)
+  const { likesBy, commentsCount } = values;
   const [liked, setLiked] = useState(
     likesBy?.includes(prop.userData?.displayName)
   );
@@ -150,7 +151,7 @@ const PostsCard = (prop) => {
             <div></div>
           ) : (
             <Button onClick={handleComment}>
-              <CommentIcon />
+              <CommentIcon /> {commentsCount}
             </Button>
           )}
         </Stack>
