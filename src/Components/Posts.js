@@ -5,32 +5,84 @@ import PostsCard from "./PostsCard";
 import { collection, getDocs } from "firebase/firestore";
 import { database } from "../firebase";
 import Loading from "./Loading";
+import { connect } from "react-redux";
+import { setFilter } from "../redux/Filter/filterAction";
 
-const Posts = () => {
+const Posts = (props) => {
+  const { filter, setFilter } = props;
   const [val, setVal] = useState([]);
   const value = collection(database, "posts");
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState()
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+    var bySearch = posts.slice(0);
+    if (props.search) {
+      setPosts(
+        bySearch.map((values, index) => {
+          if (values?.props.values.title.includes(props.search)) {
+            return values;
+          }
+        })
+      );
+    } else if (props.search === " ") {
+      //do nothing
+      setPosts(bySearch);
+    }
+  }, [props.search]);
+
+  //data from firestore ka code
+  useEffect(() => {
     const getData = async () => {
-      // setLoading(true);
       const dbVal = await getDocs(value);
       setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       setLoading(false);
     };
 
     getData();
-  },[]);
+  }, []);
 
-  const posts = val.map((values, index) => {    
-    return <PostsCard values={values} key={index}/>;
-  });
+  //posts ki array ka code
+  useEffect(() => {
+    setPosts(
+      val.map((values, index) => {
+        return <PostsCard values={values} key={index} />;
+      })
+    );
+  }, [val]);
 
-  //sort posts on the basis of the selected sort by parameter
-  useEffect(()=>{
+  //Sorting ka code
+  useEffect(() => {
+    if (filter === "latest") {
+      var byDate = posts.slice(0);
+      byDate.sort(function (a, b) {
+        return b.props.values.created.seconds - a.props.values.created.seconds;
+      });
 
-  }, [])
+      setPosts(byDate);
+    } else if (filter === "likes") {
+      var byLikes = posts.slice(0);
+      byLikes.sort(function (a, b) {
+        return b.props.values.likes - a.props.values.likes;
+      });
+
+      setPosts(byLikes);
+    } else if (filter === "comments") {
+      var byComments = posts.slice(0);
+      byComments.sort(function (a, b) {
+        return b.props.values.commentsCount - a.props.values.commentsCount;
+      });
+
+      setPosts(byComments);
+    } else if (filter === "earliest") {
+      var byDateOp = posts.slice(0);
+      byDateOp.sort(function (a, b) {
+        return a.props.values.created.seconds - b.props.values.created.seconds;
+      });
+
+      setPosts(byDateOp);
+    }
+  }, [filter]);
 
   return (
     <Stack direction="column" mt={2} spacing={2} mb={5}>
@@ -40,4 +92,17 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+const mapStateToProps = (state) => {
+  return {
+    filter: state.filter.filter,
+    search: state.search.value,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setFilter: (filter) => dispatch(setFilter(filter)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Posts);

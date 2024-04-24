@@ -48,10 +48,10 @@ const TopPostCard = (prop) => {
       >
         {values.userName}
       </Link>
-      <Typography variant="h6" color="black">
+      <Typography variant="h6" color="black" textOverflow='ellipsis'>
         {values.title}
       </Typography>
-      <Stack direction="row" spacing={8}>
+      <Stack direction="row" spacing={5} alignItems='center'>
         <Stack direction="row" spacing={1}>
           <ThumbUpAltIcon color="primary" />
           <Typography>{values.likes}</Typography>

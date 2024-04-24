@@ -4,7 +4,7 @@ import { database } from "../../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import PostsCard from "../PostsCard";
 import CommentCard from "./CommentCard";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import Loading from "../Loading";
 
 const Comments = (props) => {
@@ -25,12 +25,13 @@ const Comments = (props) => {
     return <CommentCard values={values} key={index} />
   })
 
+
   return (
     <div style={{
       width: '50%',
       height: '50%'
     }}>
-      {loading? <Loading/> : comments}
+      {loading? <Loading/> : comments.length==0?<Typography variant="h4" color={'gray'}>No Comments</Typography> : comments}
     </div>
   );
 };

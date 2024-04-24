@@ -4,15 +4,24 @@ import MessageIcon from "@mui/icons-material/Message";
 import MoodIcon from "@mui/icons-material/Mood";
 import { Link, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
-import { logout } from "../redux";
+import { logout, setSearch } from "../redux";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import SailingIcon from "@mui/icons-material/Sailing";
-import PublicIcon from '@mui/icons-material/Public';
-import { useEffect } from "react";
+import PublicIcon from "@mui/icons-material/Public";
+import { useEffect, useState } from "react";
 
 const Navbar = (props) => {
   const { isLoggedIn, userData, logout } = props;
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  };
+  useEffect(() => {
+    props.setSearch(search);
+  }, [search]);
 
   const userSignOut = async () => {
     await signOut(auth);
@@ -22,14 +31,13 @@ const Navbar = (props) => {
   const handleLogout = () => {
     logout();
     userSignOut();
+    navigate("/");
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     //api call
-    return ()=> {
-      
-    }
-  }, [])
+    return () => {};
+  }, []);
 
   return (
     <Stack
@@ -38,14 +46,18 @@ const Navbar = (props) => {
       justifyContent="space-between"
       alignItems="center"
     >
-      <Tooltip title='This is the logo bdw'>
-        <Button sx={{
-          color: 'black',
-        }}>
-          <SailingIcon sx={{
-            width: '45px',
-            height: '45px'
-          }}/>
+      <Tooltip title="Social Sailor">
+        <Button
+          sx={{
+            color: "black",
+          }}
+        >
+          <SailingIcon
+            sx={{
+              width: "45px",
+              height: "45px",
+            }}
+          />
         </Button>
       </Tooltip>
 
@@ -55,8 +67,11 @@ const Navbar = (props) => {
         variant="outlined"
         size="small"
         sx={{}}
+        autoComplete="off"
+        value={search}
+        onChange={handleChange}
       />
-      <Stack direction="row" spacing={0}  alignItems='center'>
+      <Stack direction="row" spacing={0} alignItems="center">
         <Link to="/">
           <Button>
             <HomeIcon
@@ -78,7 +93,7 @@ const Navbar = (props) => {
               <MessageIcon fontSize="medium" />
             </Button>
             <Tooltip title={`${userData.displayName}`} arrow>
-              <Link to='/profile'>
+              <Link to="/profile">
                 <Button>
                   <MoodIcon />
                 </Button>
@@ -111,6 +126,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
+    setSearch: (data) => dispatch(setSearch(data)),
   };
 };
 

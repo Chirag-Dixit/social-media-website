@@ -1,11 +1,18 @@
 import { MenuItem, Select, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { setFilter } from '../../redux/Filter/filterAction'
+import { connect } from "react-redux";
 
-const SortTab = () => {
-  const [filter, setFilter] = useState("latest");
+const SortTab = (props) => {
+  const [filter, setFilter] = useState("random");
   const handleChange = (event) => {
     setFilter(event.target.value);
   };
+
+  useEffect(()=>{
+    props.setFilter(filter)
+  }, [filter])
+
   return (
     <div
       style={{
@@ -25,6 +32,7 @@ const SortTab = () => {
           width: "150px",
         }}
       >
+        <MenuItem value="random">Random</MenuItem>
         <MenuItem value="latest">Latest</MenuItem>
         <MenuItem value="likes">Likes</MenuItem>
         <MenuItem value="comments">Comments</MenuItem>
@@ -34,4 +42,10 @@ const SortTab = () => {
   );
 };
 
-export default SortTab;
+const mapDispatchToProps = dispatch => {
+  return{
+    setFilter: (filter) => dispatch(setFilter(filter)),
+  }
+}
+
+export default connect(null, mapDispatchToProps)(SortTab);
