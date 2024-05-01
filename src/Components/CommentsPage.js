@@ -17,6 +17,7 @@ const CommentsPage = (props) => {
   const commentsCollection = collection(database, 'posts', postId, 'comments')
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([])
+  const [commentsBy, setCommentsBy] = useState([])
 
   useEffect(() => {
     const getData = async () => {
@@ -31,7 +32,7 @@ const CommentsPage = (props) => {
     setPosts(val.map((values, index) => {
       if (postId === values.id) {
         setCount(values.commentsCount)
-        console.log(values.commentsCount)
+        console.log(values.commentsBy)
         return <PostsCard values={values} key={index} commentDisabled={true} />;
       }
     }))
@@ -42,11 +43,13 @@ const CommentsPage = (props) => {
   }, [count])
 
   const handleSubmit = async() => {
+    commentsBy.push(userData.displayName)
     const updateCommentsCount = doc(database, 'posts', postId)
     
-    await updateDoc(updateCommentsCount, {commentsCount: count+1})
+    await updateDoc(updateCommentsCount, {commentsCount: count+1, commentsBy: commentsBy})
     
     await addDoc(commentsCollection, {userName: userData.displayName, content: content, created: serverTimestamp(), })
+
 
     window.location.reload(false);
   }

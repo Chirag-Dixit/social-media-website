@@ -3,6 +3,7 @@ import { Button, Card, Stack, TextField, Typography } from "@mui/material";
 import User from "../../User.png";
 import { doc, updateDoc } from "firebase/firestore";
 import { database } from "../../firebase";
+import CreateIcon from "@mui/icons-material/Create";
 
 const ProfileCard2 = (props) => {
   const { values } = props;
@@ -40,6 +41,7 @@ const ProfileCard2 = (props) => {
             height: "100px",
           }}
         />
+
         <Typography variant="">{values.userName}</Typography>
         {editBio ? (
           <Stack direction="column" alignItems="center" spacing={2}>

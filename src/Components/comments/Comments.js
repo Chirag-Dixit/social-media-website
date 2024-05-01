@@ -12,6 +12,7 @@ const Comments = (props) => {
   const [val, setVal] = useState([]);
   const value = collection(database, 'posts', postId, 'comments')
   const [loading, setLoading] = useState(false)
+  
   useEffect(() => {
     const getData = async () => {
       const dbVal = await getDocs(value);
