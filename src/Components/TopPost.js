@@ -28,7 +28,7 @@ const TopPost = () => {
   })
 
   return (
-    <Stack direction='column' mt={2} spacing={2}>
+    <Stack className="top-post" direction='column' mt={2} spacing={2} >
       <Stack
         direction="row"
         alignItems="center"

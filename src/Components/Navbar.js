@@ -2,7 +2,7 @@ import { Button, Select, Stack, TextField, Tooltip, Zoom } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import MessageIcon from "@mui/icons-material/Message";
 import MoodIcon from "@mui/icons-material/Mood";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout, setSearch } from "../redux";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -15,6 +15,20 @@ const Navbar = (props) => {
   const { isLoggedIn, userData, logout } = props;
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const [width, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleChange = (e) => {
     setSearch(e.target.value);
@@ -41,8 +55,8 @@ const Navbar = (props) => {
 
   return (
     <Stack
-      direction="row"
-      spacing={10}
+      direction={width < 600 ? "column" : "row"}
+      spacing={2}
       justifyContent="space-between"
       alignItems="center"
     >
@@ -61,16 +75,21 @@ const Navbar = (props) => {
         </Button>
       </Tooltip>
 
-      <TextField
-        id="outlined-basic"
-        label="Search for posts..."
-        variant="outlined"
-        size="small"
-        sx={{}}
-        autoComplete="off"
-        value={search}
-        onChange={handleChange}
-      />
+      {width >= 600 && (
+        <TextField
+          className="searchBar"
+          id="outlined-basic"
+          label="Search for posts..."
+          variant="outlined"
+          size="small"
+          autoComplete="off"
+          value={search}
+          onChange={handleChange}
+          disabled={location.pathname !== "/"}
+          sx={{ flexGrow: 1, maxWidth: 300 }}
+        />
+      )}
+
       <Stack direction="row" spacing={0} alignItems="center">
         <Link to="/">
           <Button>
@@ -84,14 +103,16 @@ const Navbar = (props) => {
         </Link>
 
         {isLoggedIn ? (
-          <div>
-            <Button
-              sx={{
-                color: "black",
-              }}
-            >
-              <MessageIcon fontSize="medium" />
-            </Button>
+          <Stack direction="row">
+            <Tooltip title={"Feature Not Available Currently"} arrow>
+              <Button
+                sx={{
+                  color: "black",
+                }}
+              >
+                <MessageIcon fontSize="medium" />
+              </Button>
+            </Tooltip>
             <Tooltip title={`${userData.displayName}`} arrow>
               <Link to="/profile">
                 <Button>
@@ -100,16 +121,16 @@ const Navbar = (props) => {
               </Link>
             </Tooltip>
             <Button onClick={handleLogout}>Logout</Button>
-          </div>
+          </Stack>
         ) : (
-          <div>
+          <Stack direction="row">
             <Link to="/signup">
               <Button>Sign Up</Button>
             </Link>
             <Link to="/login">
               <Button variant="text">Login</Button>
             </Link>
-          </div>
+          </Stack>
         )}
       </Stack>
     </Stack>

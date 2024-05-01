@@ -16,20 +16,17 @@ const Posts = (props) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    var bySearch = posts.slice(0);
-    if (props.search) {
+    var bySearch = val.map((values, index) => <PostsCard values={values} key={index} />);
+    if (props.search.trim() === "") {
+      setPosts(bySearch);
+    } else {
       setPosts(
-        bySearch.map((values, index) => {
-          if (values?.props.values.title.includes(props.search)) {
-            return values;
-          }
+        bySearch.filter((values) => {
+          return values.props.values.title.includes(props.search);
         })
       );
-    } else if (props.search === " ") {
-      //do nothing
-      setPosts(bySearch);
     }
-  }, [props.search]);
+  }, [props.search, val]);
 
   //data from firestore ka code
   useEffect(() => {

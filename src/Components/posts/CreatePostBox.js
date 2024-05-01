@@ -14,7 +14,7 @@ const CreatePostBox = (prop) => {
     const value = collection(database, 'posts')
 
     const handleCreate = async() => {
-        await addDoc(value, {title: title, content: content, userName: userData.displayName, created: serverTimestamp(), likes: 0, commentsCount: 0, likesBy: [] })
+        await addDoc(value, {title: title, content: content, userName: userData.displayName, created: serverTimestamp(), likes: 0, commentsCount: 0, likesBy: [], commentsBy: [] })
         navigate('/')
     }
 

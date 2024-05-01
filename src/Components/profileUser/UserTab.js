@@ -17,6 +17,10 @@ const UserTab = (prop) => {
 
   const handleChange = (e, newValue) => {
     setTab(newValue);
+    setLoading(true)
+    setTimeout(()=>{
+      setLoading(false)
+    }, 1000)
   };
 
   useEffect(() => {
@@ -30,14 +34,32 @@ const UserTab = (prop) => {
   }, []);
 
   useEffect(() => {
-    setPosts(
-      val.map((values, index) => {
-        if (userName === values.userName) {
-          return <PostsCard values={values} key={index} />;
-        }
-      })
-    );
-  }, [val]);
+    if(tab === 'posts'){
+      setPosts(
+        val.map((values, index) => {
+          if (userName === values.userName) {
+            return <PostsCard values={values} key={index} />;
+          }
+        })
+      );
+    }else if(tab === 'liked'){
+      setPosts(
+        val.map((values, index)=>{
+          if(values.likesBy?.includes(userName)){
+            return <PostsCard values={values} key={index} />;
+          }
+        })
+      )
+    }else{
+      setPosts(
+        val.map((values, index)=>{
+          if(values.commentsBy?.includes(userName)){
+            return <PostsCard values={values} key={index} />;
+          }
+        })
+      )
+    }
+  }, [val, tab]);
 
   useEffect(() => {
     if (filter === "latest") {
