@@ -15,7 +15,10 @@ Welcome to our Social Media Application, where connections are made, voices are 
 ## User Interface
 ![image](https://github.com/Chirag-Dixit/social-media-website/assets/97054098/164f8e17-81ef-4637-97df-0a28348aa37e)
 
+![image](./public/commentPage.png)
+
 ![image](https://github.com/Chirag-Dixit/social-media-website/assets/97054098/d6267f52-6506-4146-864f-5f3b4653c074)
+
 
 
 ## Technology Stack
@@ -46,7 +49,3 @@ The application is deployed on Netlify. You can access it [here](<netlify-app-ur
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

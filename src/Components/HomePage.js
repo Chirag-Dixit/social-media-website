@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import NewPost from "./NewPost";
 import TopPost from "./TopPost";
-import { Grid, Stack } from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
 import PostsCard from "./PostsCard";
 import TopPostCard from "./TopPostCard";
 import Posts from "./Posts";
@@ -14,10 +14,17 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 const HomePage = (props) => {
   const isMobile = useMediaQuery("(max-width:600px)");
+  const {search} = props
 
   return (
     <Stack className="main" minWidth={"600px"} maxWidth={"900px"}>
       <Navbar />
+      {
+        search != '' && <Typography variant="h6" sx={{
+          marginTop: '10px', 
+          color: 'red'
+        }}>Showing Results for '{search}'</Typography>
+      }
       <Grid
         container
         alignItems="flex-start"
@@ -37,10 +44,16 @@ const HomePage = (props) => {
   );
 };
 
+const mapStateToProps = state => {
+  return{
+    search: state.search.value,
+  }
+}
+
 const mapDispatchToProps = (dispatch) => {
   return {
     setBio: (data) => dispatch(setBio(data)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(HomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
