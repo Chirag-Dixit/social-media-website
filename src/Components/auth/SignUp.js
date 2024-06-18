@@ -58,7 +58,7 @@ const SignUp = (props) => {
           color: "grey",
         }}
       >
-        Logo/Name
+        Social Sailor
       </h1>
 
       <Box textAlign="center" mt={5} component="form" onSubmit={signUp}>
@@ -67,7 +67,7 @@ const SignUp = (props) => {
             fontSize: "25px",
           }}
         >
-          Sign Up
+          Create an account!
         </p>
         <p
           style={{
