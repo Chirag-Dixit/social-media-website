@@ -28,7 +28,6 @@ const Posts = (props) => {
     }
   }, [props.search, val]);
 
-  //data from firestore ka code
   useEffect(() => {
     const getData = async () => {
       const dbVal = await getDocs(value);
@@ -39,7 +38,7 @@ const Posts = (props) => {
     getData();
   }, []);
 
-  //posts ki array ka code
+
   useEffect(() => {
     setPosts(
       val.map((values, index) => {
@@ -48,7 +47,7 @@ const Posts = (props) => {
     );
   }, [val]);
 
-  //Sorting ka code
+
   useEffect(() => {
     if (filter === "latest") {
       var byDate = posts.slice(0);

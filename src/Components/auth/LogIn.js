@@ -57,7 +57,7 @@ const LogIn = (prop) => {
           color: "grey",
         }}
       >
-        Logo/Name
+        Social Sailor
       </h1>
       <Box textAlign="center" mt={5}>
         <p
